@@ -1,0 +1,6 @@
+$kind: http-request
+url: "{{baseUrl}}/notes/1"
+method: GET
+headers:
+  X-User-Id: "{{premiumUserId}}"
+order: 9000

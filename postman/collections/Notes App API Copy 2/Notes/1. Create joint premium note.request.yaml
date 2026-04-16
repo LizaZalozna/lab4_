@@ -1,0 +1,17 @@
+$kind: http-request
+url: "{{baseUrl}}/notes"
+method: POST
+headers:
+  X-User-Id: "{{premiumUserId}}"
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "title": "Shared architecture draft",
+      "content": "Prepare layered architecture explanation.",
+      "authors": [1, 3],
+      "visibility": "joint",
+      "categoryIds": [1]
+    }
+order: 1000

@@ -1,0 +1,17 @@
+$kind: http-request
+url: "{{baseUrl}}/notes"
+method: POST
+headers:
+  X-User-Id: "{{premiumUserId}}"
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "title": "Invalid shared note",
+      "content": "This request should fail.",
+      "authors": [1, 2],
+      "visibility": "joint",
+      "categoryIds": [1]
+    }
+order: 2000

@@ -1,0 +1,14 @@
+$kind: http-request
+url: "{{baseUrl}}/notes/search?title=API&categoryId=1&page=0&size=5&sort=create\
+  dAt&direction=DESC"
+method: GET
+headers:
+  X-User-Id: "{{premiumUserId}}"
+queryParams:
+  title: API
+  categoryId: "1"
+  page: "0"
+  size: "5"
+  sort: createdAt
+  direction: DESC
+order: 3000

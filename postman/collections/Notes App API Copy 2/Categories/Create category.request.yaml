@@ -1,0 +1,13 @@
+$kind: http-request
+url: "{{baseUrl}}/categories"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "name": "Study",
+      "description": "Learning and research notes"
+    }
+order: 2000

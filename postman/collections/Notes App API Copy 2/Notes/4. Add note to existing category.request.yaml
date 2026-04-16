@@ -1,0 +1,6 @@
+$kind: http-request
+url: "{{baseUrl}}/notes/1/categories/2"
+method: POST
+headers:
+  X-User-Id: "{{premiumUserId}}"
+order: 7000

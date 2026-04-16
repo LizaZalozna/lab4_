@@ -1,0 +1,17 @@
+$kind: http-request
+url: "{{baseUrl}}/notes/3"
+method: PUT
+headers:
+  X-User-Id: "{{premiumUserId}}"
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "title": "Public REST checklist",
+      "content": "Updated categories for demo.",
+      "authors": [1],
+      "visibility": "public",
+      "categoryIds": [1, 2]
+    }
+order: 8000

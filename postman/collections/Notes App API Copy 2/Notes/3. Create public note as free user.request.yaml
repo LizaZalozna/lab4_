@@ -1,0 +1,17 @@
+$kind: http-request
+url: "{{baseUrl}}/notes"
+method: POST
+headers:
+  X-User-Id: "{{freeUserId}}"
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "title": "Public reminder",
+      "content": "Track free user public limit.",
+      "authors": [2],
+      "visibility": "public",
+      "categoryIds": [2]
+    }
+order: 4000

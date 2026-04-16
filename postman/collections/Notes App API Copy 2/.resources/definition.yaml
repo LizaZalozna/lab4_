@@ -1,0 +1,5 @@
+$kind: collection
+variables:
+  baseUrl: http://localhost:8080
+  premiumUserId: "1"
+  freeUserId: "2"

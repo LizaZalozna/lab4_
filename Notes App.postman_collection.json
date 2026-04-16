@@ -1,0 +1,282 @@
+{
+  "info": {
+    "_postman_id": "a8603472-cffe-41e9-bf8d-bd42ed2c6eb4",
+    "name": "Notes App API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "premiumUserId",
+      "value": "1"
+    },
+    {
+      "key": "freeUserId",
+      "value": "2"
+    }
+  ],
+  "item": [
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/users"
+          }
+        },
+        {
+          "name": "Create user",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"maria.notes\",\n  \"surname\": \"Bondar\",\n  \"name\": \"Maria\",\n  \"isPremium\": true,\n  \"password\": \"secret4\"\n}"
+            },
+            "url": "{{baseUrl}}/users"
+          }
+        },
+        {
+          "name": "Delete user",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/users/{{freeUserId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Get categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/categories"
+          }
+        },
+        {
+          "name": "Create category",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Study\",\n  \"description\": \"Learning and research notes\"\n}"
+            },
+            "url": "{{baseUrl}}/categories"
+          }
+        },
+        {
+          "name": "Delete category",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/categories/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notes",
+      "item": [
+        {
+          "name": "1. Create joint premium note",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-User-Id",
+                "value": "{{premiumUserId}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Shared architecture draft\",\n  \"content\": \"Prepare layered architecture explanation.\",\n  \"authors\": [1, 3],\n  \"visibility\": \"joint\",\n  \"categoryIds\": [1]\n}"
+            },
+            "url": "{{baseUrl}}/notes"
+          }
+        },
+        {
+          "name": "1b. Reject joint note with free co-author",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-User-Id",
+                "value": "{{premiumUserId}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Invalid shared note\",\n  \"content\": \"This request should fail.\",\n  \"authors\": [1, 2],\n  \"visibility\": \"joint\",\n  \"categoryIds\": [1]\n}"
+            },
+            "url": "{{baseUrl}}/notes"
+          }
+        },
+        {
+          "name": "2. Search with filtering",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-User-Id",
+                "value": "{{premiumUserId}}"
+              }
+            ],
+            "url": "{{baseUrl}}/notes/search?title=API&categoryId=1&page=0&size=5&sort=createdAt&direction=DESC"
+          }
+        },
+        {
+          "name": "3. Create public note as free user",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-User-Id",
+                "value": "{{freeUserId}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Public reminder\",\n  \"content\": \"Track free user public limit.\",\n  \"authors\": [2],\n  \"visibility\": \"public\",\n  \"categoryIds\": [2]\n}"
+            },
+            "url": "{{baseUrl}}/notes"
+          }
+        },
+        {
+          "name": "3b. (Repeat) Create public notes until limit hit",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-User-Id",
+                "value": "{{freeUserId}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Public note {{$randomInt}}\",\n  \"content\": \"Generate public notes to reach the limit.\",\n  \"authors\": [2],\n  \"visibility\": \"public\"\n}"
+            },
+            "url": "{{baseUrl}}/notes"
+          }
+        },
+        {
+          "name": "3c. Expect conflict when limit exceeded (free user)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-User-Id",
+                "value": "{{freeUserId}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Public note should fail\",\n  \"content\": \"Should fail after 10 public notes.\",\n  \"authors\": [2],\n  \"visibility\": \"public\"\n}"
+            },
+            "url": "{{baseUrl}}/notes"
+          }
+        },
+        {
+          "name": "4. Add note to existing category",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-User-Id",
+                "value": "{{premiumUserId}}"
+              }
+            ],
+            "url": "{{baseUrl}}/notes/1/categories/2"
+          }
+        },
+        {
+          "name": "5. Update note categories",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-User-Id",
+                "value": "{{premiumUserId}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Public REST checklist\",\n  \"content\": \"Updated categories for demo.\",\n  \"authors\": [1],\n  \"visibility\": \"public\",\n  \"categoryIds\": [1, 2]\n}"
+            },
+            "url": "{{baseUrl}}/notes/3"
+          }
+        },
+        {
+          "name": "Get note by id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-User-Id",
+                "value": "{{premiumUserId}}"
+              }
+            ],
+            "url": "{{baseUrl}}/notes/1"
+          }
+        },
+        {
+          "name": "Delete note",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "X-User-Id",
+                "value": "{{premiumUserId}}"
+              }
+            ],
+            "url": "{{baseUrl}}/notes/1"
+          }
+        }
+      ]
+    }
+  ]
+}

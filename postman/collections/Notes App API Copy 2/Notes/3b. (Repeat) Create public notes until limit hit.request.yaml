@@ -1,0 +1,16 @@
+$kind: http-request
+url: "{{baseUrl}}/notes"
+method: POST
+headers:
+  X-User-Id: "{{freeUserId}}"
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "title": "Public note {{$randomInt}}",
+      "content": "Generate public notes to reach the limit.",
+      "authors": [2],
+      "visibility": "public"
+    }
+order: 5000
