@@ -12,6 +12,5 @@ public class UserResponse {
     private String surname;
     private String name;
 
-    @JsonProperty("is_premium")
     private boolean isPremium;
 }

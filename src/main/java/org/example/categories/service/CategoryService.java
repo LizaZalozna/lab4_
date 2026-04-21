@@ -5,7 +5,10 @@ import org.example.categories.service.exception.NotFoundException;
 import org.example.categories.repository.model.CategoryEntity;
 import org.example.categories.repository.CategoryRepository;
 import org.example.categories.api.dto.CategoryRequest;
+import org.example.notes.repository.NoteRepository;
+import org.example.notes.repository.model.NoteEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -13,9 +16,11 @@ import java.util.List;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final NoteRepository noteRepository;
 
-    public CategoryService(CategoryRepository categoryRepository) {
+    public CategoryService(CategoryRepository categoryRepository, NoteRepository noteRepository) {
         this.categoryRepository = categoryRepository;
+        this.noteRepository = noteRepository;
     }
 
     public CategoryEntity create(CategoryRequest request) {
@@ -51,8 +56,13 @@ public class CategoryService {
                 .orElseThrow(() -> new NotFoundException("Category with id " + id + " not found"));
     }
 
+    @Transactional
     public void delete(Long id) {
-        getById(id);
+        CategoryEntity category = getById(id);
+        List<NoteEntity> notes = noteRepository.findByCategoryId(id);
+        for (NoteEntity note : notes) {
+            note.getCategories().remove(category);
+        }
         categoryRepository.deleteById(id);
     }
 }

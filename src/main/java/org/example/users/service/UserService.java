@@ -5,7 +5,10 @@ import org.example.users.service.exception.NotFoundException;
 import org.example.users.repository.model.UserEntity;
 import org.example.users.repository.UserRepository;
 import org.example.users.api.dto.CreateUserRequest;
+import org.example.notes.repository.NoteRepository;
+import org.example.notes.repository.model.NoteEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -13,9 +16,11 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final NoteRepository noteRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, NoteRepository noteRepository) {
         this.userRepository = userRepository;
+        this.noteRepository = noteRepository;
     }
 
     public UserEntity create(CreateUserRequest request) {
@@ -43,8 +48,21 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException("User with id " + id + " not found"));
     }
 
+@Transactional
     public void delete(Long id) {
-        getById(id);
+        UserEntity user = userRepository.findById(id).orElseThrow();
+        List<NoteEntity> notes = noteRepository.findByAuthorId(id);
+        for (NoteEntity note : notes) {
+            int c = note.getAuthors().size();
+            note.getAuthors().remove(user);
+            if (c == 1) {
+                noteRepository.delete(note);
+            }
+            else {
+                noteRepository.save(note);
+            }
+
+        }
         userRepository.deleteById(id);
     }
 }
